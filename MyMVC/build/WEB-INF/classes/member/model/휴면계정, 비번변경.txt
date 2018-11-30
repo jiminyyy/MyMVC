@@ -1,0 +1,151 @@
+	@Override
+	public MemberVO loginOKmemberInfo(String userid, String pwd) throws SQLException {
+			
+		MemberVO membervo = null;
+		
+		try {
+			conn = ds.getConnection();
+			// DBCP 객체 ds를 통해 톰캣의 context.xml에 설정되어진 Connection 객체를 빌려오는 것이다.
+			
+			conn.setAutoCommit(false);
+			
+			String sql = "select idx, userid, name, coin, point, lastPwdChangeDate, lastLoginDate, " +
+						 " MONTHS_BETWEEN (add_months(sysdate, -12), lastLoginDate ) as lastLoginDateDifference " +
+						 " from jsp_member " +
+						 " where status = 1 " +
+						 " and userid = ? and pwd = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userid);
+			pstmt.setString(2, SHA256.encrypt(pwd));
+			
+			rs = pstmt.executeQuery();
+			
+			boolean bool = rs.next();
+			
+			if(bool) {
+				// 회원이 존재하는 경우
+				int idx = rs.getInt("idx");
+				String v_userid = rs.getString("userid");
+				String name = rs.getString("name");
+				int coin = rs.getInt("coin");
+				int point = rs.getInt("point");
+				String lastPwdChangeDate = rs.getString("lastPwdChangeDate");
+				String lastLoginDate = rs.getString("lastLoginDate");
+				int lastLoginDateDifference = rs.getInt("lastLoginDateDifference");
+				
+				if (lastLoginDateDifference<0) {
+					
+					sql = " update jsp_member set lastLoginDate = sysdate " +
+							" where userid = ? ";
+					
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, userid);
+					int n = pstmt.executeUpdate();
+				
+					if (n == 1) {
+						membervo = new MemberVO();
+						membervo.setIdx(idx);
+						membervo.setUserid(v_userid);
+						membervo.setName(name);
+						membervo.setCoin(coin);
+						membervo.setPoint(point);
+						membervo.setLastPwdChangeDate(lastPwdChangeDate);
+						membervo.setLastLoginDate(lastLoginDate);
+						
+						conn.commit();
+					}
+					else {
+						conn.rollback();
+					}
+				}
+				else {
+					membervo = new MemberVO();
+					membervo.setUserid("dormant");
+				}
+				
+			} // if(bool)
+			else { // 미존재 혹은 탈퇴 시
+				
+			}
+			
+			conn.setAutoCommit(true);
+			
+		} finally {
+			close();
+		}
+		
+		return membervo;
+	}
+	
+	--- action
+					
+					if(loginUser.getUserid() == "dormant") {
+					
+					String msg = "마지막 로그인날짜로부터 1년이 경과하여 휴면계정이 되었습니다!!";
+					String loc = "javascript:history.back()";
+					
+					req.setAttribute("msg", msg);
+					req.setAttribute("loc", loc);
+					
+					super.setRedirect(false);
+					super.setViewPage("/WEB-INF/msg.jsp");
+					
+					return;
+				}
+				
+	
+
+	
+		
+	@Override
+	public int lastPwdChangeDateCheck(String userid) throws SQLException {
+		
+		int result = 0;
+		
+		try {               
+			conn = ds.getConnection();
+			// DBCP(DB Connection Pool) 객체 ds를 통해  
+			// 톰캣의 context.xml 에 설정되어진 Connection 객체를 빌려오는 것이다.
+			
+			String sql = " select MONTHS_BETWEEN (add_months(sysdate, -6), lastPwdChangeDate ) as lastpwdchangedateDifference \n "+
+							 "from jsp_member\n "+
+							 " where userid = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, userid);
+				
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			result = rs.getInt("lastpwdchangedateDifference");
+			
+		} finally {
+			close();
+		}
+		
+		return result;
+	}	
+	
+	-- action
+	
+					int lastPwdChangeDate = memberdao.lastPwdChangeDateCheck(userid);
+				
+				if(lastPwdChangeDate > 0) {
+					
+					String msg = "비밀번호 변경 후 6개월이 지났습니다! 비밀번호를 변경해주세요!!";
+					String loc = "index.do";
+					
+					req.setAttribute("msg", msg);
+					req.setAttribute("loc", loc);
+					
+					super.setRedirect(false);
+					super.setViewPage("/WEB-INF/msg.jsp");
+					
+					return;
+				}
+				
+	
+	

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5 Form Control</title>
+<style type="text/css">
+    #container {border: 1px solid red;
+                width: 80%; 
+                margin: 0 auto; }
+    /*
+	    "0 auto" 는 "0 auto 0 auto" 와 동일한 의미입니다.
+		이전에 "10px 20px 30px 40px" 처럼 썼던 것은 기억하시죠..?
+		맨 처음 값이 블럭의 상단, 다음이 우측, 세번째가 하단, 네번쨰가 좌측, 이런식이죠.
+		그런데, 반복되는 값이라면 줄여서 "10px 20px" 이라 했던 거구요.
+		"10px 20px" 은 "10px 20px 10px 20px" 과 같은 말이지요.
+		동일한 값으로 4번 반복된다면 "10px" 하나만 썼던 것이구요.
+		그러니까, "0 auto" 는 상단과 하단은 여백을 주지 말고, 좌측과 우측의 여백을 자동으로(auto) 주라는 것이죠.
+    */
+	#content {border: 1px solid blue; 
+	          width: 40%; 
+	          margin: 3% auto;}
+	          
+	li {margin-bottom: 20px;}
+</style>
+</head>
+<body>
+<div id="container">
+<div id="content"> 
+<form>
+	<fieldset>
+		<legend align="left">납품자정보</legend>
+		<ol style="list-style-type: decimal-leading-zero;">
+			<li>
+			    <label for="name">납품자명:</label>
+			    <input type="text" placeholder="성명" name="name" required>
+			</li>
+			<li>
+			    <label for="email">email:</label>
+				<input type="email" placeholder="abc@def.com" name="email" required>
+			</li>
+			<li>
+			    <label for="website">홈페이지:</label>
+				<input type="url" placeholder="http://" name="website" required>
+			</li>
+		</ol>
+	</fieldset>
+	<fieldset style="margin-top: 5%;">
+		<legend align="left">납품정보</legend>
+		<ul style="list-style-type: square;">
+			<li>
+			    <label for="goodirum">상품명:</label>
+				<input type="text" name="goodirum" list="goodlist">
+				<datalist id="goodlist">
+					<option value="dog1004">도그1004</option>
+					<option value="catchicken">고양이치킨</option>
+					<option value="milk">우유</option>
+				</datalist>
+			</li>
+			<li>
+				<label for="number">납품수량:</label>
+				<input type="number" name="number" min="10" max="100" step="10" placeholder="최소10이상">
+			</li>
+			<li>
+				<label for="range">납품등급:</label>
+				<input type="range" name="range" min="0" max="10" value="4" step="2">
+			</li>
+			<li>
+				<label for="message">기타사항:</label>
+				<textarea name="message" cols="30" rows="5" required></textarea>
+			</li>
+		</ul>
+	</fieldset>
+	<div align="center" style="margin-top: 4%;">
+	<button type="submit">send message</button>
+	</div>
+</form>
+</div>
+</div> 
+</body>
+</html>

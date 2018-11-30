@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Html5 시멘틱(Semantic)은 '의미론적인'이란 말이다.</title>
+
+<style type="text/css">
+
+	header {border: 1px solid red;
+	        width: 90%;
+	        height: 150px;
+	        margin: 10px auto;}
+	        
+	nav {border: 1px solid red;
+	     width: 16%;
+	     min-height: 450px;
+	     margin: 10px 1px 10px 5%;
+	     float: left;}  
+	     
+	section {border: 1px solid red;
+		     width: 57%;
+		     min-height: 450px;
+		     margin: 10px 2px 10px 2px;
+		     float: left;}
+		     
+    aside {border: 1px solid red;
+		   width: 16%;
+		   min-height: 450px;
+		   margin: 10px 5.2% 10px 1px;
+		   float: left;}
+		   
+	footer {border: 1px solid red;
+	        width: 90%;
+	        height: 110px;
+	        margin: 10px auto;
+	        clear: both; }	   	
+
+    .myword1 {color: blue; 
+              font-weight: bold;}
+             
+    .myword2 {color: red; 
+              font-weight: bold;}         
+ 
+</style>
+</head>
+
+<body>
+<header>
+   <p>header 태그는 헤더를 의미(로고, 머리글, 제목이 들어가는곳)</p>
+   <h1>HTML5 Header</h1>
+</header>
+
+<nav>
+   <p>nav 태그는 내비게이션을 의미(메뉴가 들어가는곳)</p>
+   <ul style="list-style-type: none;">
+      <li><a href="#">Menu-1</a></li>
+      <li><a href="#">Menu-2</a></li>
+      <li><a href="#">Menu-3</a></li>
+   </ul>
+</nav>
+
+<section>
+    <p>section 태그는 여러 중심 내용을 감싸는 공간을 의미(웹페이지의 본문, 내용이 들어가는 곳)</p>
+	<article>
+	  <p>article 태그는 글자가 많이 들어가는 부분을 의미(section을 여러개의 article로 나누는 것)</p>
+	  <h1>내용물 제목1</h1>
+	  <p>여기는 내용물 제목1에 대한 상세한 내용이 들어옵니다.</p>
+	</article>
+	
+	<article>
+	  <h1>내용물 제목2</h1>
+	  <p>여기는 내용물 제목2에 대한 상세한 내용이 들어옵니다.</p>
+	</article>
+	
+	<article>
+	  일반적으로 HTML5로 넘어오면서 태그의 가장 큰 변화는 시멘틱 태그라고 말한다. 
+	  이 때문에 일반적으로 HTML5 웹 페이지를 시멘틱 웹페이지라고 말한다. 
+	  일단 시멘틱(Semantic)은 <span class="myword1">'의미론적인'</span>이라는 영어 단어이다.
+     <span class="myword1">시멘틱 태그를 사용하여 스타일 시트를 적용하고 사용자가 눈으로 볼때 "이것은 제목이며, 이것은 본문"이라는  구분이 쉽게 되어진다.</span>
+     <p>
+     <span class="myword2">시멘틱 태그는 모두 div 태그와 같은 기능을 수행하는 태그이다.</span> 
+	</article>
+</section>
+
+<aside>
+   <p>aside 태그는 사이드에 위치하는 공간을 의미(본문이외의 부가적인 내용이나 광고, 링크를 담는 곳)</p>
+   <p>사이드 정보가 들어가는곳</p>
+   <p>광고가 들어갑니다</p>
+</aside>
+
+<footer>
+    <p>footer 푸터를 의미(회사정보/저작권/약관 등의 정보를 담는곳)</p>
+	서울특별시 중구 남대문로 120 대일빌딩 2F, 3F
+</footer>
+
+</body>
+</html>

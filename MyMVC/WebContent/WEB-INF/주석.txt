@@ -1,0 +1,25 @@
+#(주석문) / test Mapping Information
+
+/test1.do=test.controller.Test1Controller
+/test2.do=test.controller.Test2Controller
+/test3.do=test.controller.Test3Controller
+/test4.do=test.controller.Test4Controller
+
+=을 중심으로 
+test1.do는 key(고유한 값) / test.controller.Test4Controller는 value
+
+http://localhost:9090/MyMVC/test1.do(키값)을 주면
+객체화 된 test.controller.Test4Controller를 실행
+
+
+FrontController에서 Command.properties파일을 인지하고 있다면
+
+Command.properties에서 명시한 것 처럼
+test1.do 실행 시 test.controller.Test1Controller 클래스가 응답
+
+FrontController 서블릿 실행 후 Command.properties에 
+/index.do=test.controller.IndexController항목이 추가되면?
+-> 인식 불가
+=> 가장 처음 딱 한번만 Command.properties을 읽어 적용한다.
+==> 변경사항이 있다면 서버를 재시작 해야한다.(web.xml과 동일)
+

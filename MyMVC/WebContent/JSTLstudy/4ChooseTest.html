@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>수를 입력받아서 1,3이라면 (남) 2,4라면 (여)로 나타내기</title>
+
+<script type="text/javascript">
+	function goSubmit() {
+		var frm = document.genderFrm;
+		frm.submit();
+	}
+
+</script>
+
+</head>
+<body>
+	<form name="genderFrm" action="4ChooseTestEnd.jsp" method="get">
+		숫자입력 : <input type="text" name="num" /> <br/>
+		<button type="button" onClick="goSubmit();">확인</button>
+	
+	</form>
+</body>
+</html>

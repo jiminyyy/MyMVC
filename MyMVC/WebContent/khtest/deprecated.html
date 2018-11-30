@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HTML5에서 퇴화한 엘리먼트</title>
+</head>
+<body>
+    <h2>HTML5에서 퇴화한 엘리먼트</h2>
+    1. font 태그 => font 태그 대신에 css font 속성을 사용한다.<br/>
+	<p>
+	   <font size="3" color="red">This is some text!</font>
+	</p>
+	
+	<p style="font-size: 12pt; color: red; font-family: verdana;">
+	   This is some text!
+	</p>
+	
+	2. center 태그 => center 태그 대신에 text-align 속성으로 정렬한다.(left, right, center, justify)<br/>
+	<p>
+	  <center>This text will be center-aligned.</center> 
+	</p>  
+	
+	<p style="text-align: center;">
+	  This text will be center-aligned.
+	</p>
+	
+	3. dir 태그 => dir 대신에 ul 태그를 사용한다. <br/>
+	<p>
+	   <dir>
+		  <li>html</li>
+		  <li>javascript</li>
+		  <li>css</li>
+		</dir>
+	</p> 
+	
+	<p>
+	   <ul>
+		  <li>html</li>
+		  <li>javascript</li>
+		  <li>css</li>
+		</ul>
+	</p> 
+	
+	4. strike 태그 => strike 대신에 text-decoration 속성 line-through를 사용한다. <br/>
+	<p>
+	   정가:<strike>12,000원</strike><br>
+	   판매가:10,000원
+	</p>
+	
+	<p>
+	   정가:<span style="text-decoration: line-through;">12,000원</span><br>
+	   판매가:10,000원
+	</p>
+	
+	5. u 태그 => u 태그 대신에 text-decoration 속성 underline를 사용한다. <br/>
+	<p>
+	   <u>밑줄쫙</u>
+	</p>
+	
+	<p>
+	   <span style="text-decoration: underline;">밑줄쫙</span>
+	</p>
+	
+	6. frame, frameset, noframes 태그 => 대신에 iframe 태그나 div 를 사용한다. <br/>
+		
+</body>
+</html>
+
+

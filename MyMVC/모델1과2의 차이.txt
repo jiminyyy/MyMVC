@@ -1,0 +1,20 @@
+<<모델 1>>
+
+프로그래머 / 디자이너
+
+.JSP = HTML + JAVA
+
+-> 업무속도 저하
+
+
+<<모델 2>>
+
+프로그래머 / 디자이너
+
+MVC (	Model + View + Controller	)
+
+Model => DB접근 일처리를 해주는 객체
+View   => 화면에 보여지는 결과물 (.jsp)
+Controller => 업무 일처리를 해주는 객체 (.java)
+
+-> 업무속도 향상
