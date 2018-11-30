@@ -34,7 +34,7 @@
 			    success:function(json){
 			    	if(json.n == 0) {
 			    		$("#error").empty();
-			    		$("#good").empty().html("ID로 사용가능");
+			    		$("#good").empty().html("ID 사용가능");
 			    	}
 			    	else if(json.n == 1) {
 			    		$("#good").empty();
