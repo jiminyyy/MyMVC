@@ -38,7 +38,7 @@
 			    	}
 			    	else if(json.n == 1) {
 			    		$("#good").empty();
-			    		$("#error").empty().html("이미 사용중");
+			    		$("#error").empty().html("이미 사용중ㅠ");
 			    	}
 			    },
 			    error: function(request, status, error){
