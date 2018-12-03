@@ -309,4 +309,379 @@ public class AjaxDAO implements InterAjaxDAO {
 		return n;
 	}// end of int idDuplicateCheck(String userid)---------------
 	
+// === *** 테이블 tbl_wordLargeCategory 에서 lgcategorycode 와 codename 을 가져오는(select) 메소드 생성하기 *** // 
+	@Override
+	public List<HashMap<String, String>> getLgcategorycode() 
+		throws SQLException {
+		
+		List<HashMap<String, String>> lgcategorycodeList = null;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql = " select lgcategorycode, codename "
+					   + " from tbl_wordLargeCategory "
+					   + " order by seq asc ";
+			
+			pstmt = conn.prepareStatement(sql); 
+						
+			rs = pstmt.executeQuery();
+			
+			int cnt = 0;
+			while(rs.next()) {
+				cnt++;
+				if(cnt == 1) {
+					lgcategorycodeList = new ArrayList<HashMap<String, String>>();
+				}
+				
+				String lgcategorycode = rs.getString("lgcategorycode"); 
+			    String codename = rs.getString("codename"); 
+			    
+			    HashMap<String, String> map = new HashMap<String, String>();
+			    map.put("LGCATEGORYCODE", lgcategorycode);
+			    map.put("CODENAME", codename);
+			      
+			    lgcategorycodeList.add(map);  
+			}// end of while-----------------
+			
+		} finally{
+			close();
+		}
+		
+		return lgcategorycodeList;
+	}// end of List<HashMap<String, String>> getLgcategorycode()---------------------------
+
+
+
+// === *** 테이블 tbl_wordLargeCategory 에서 lgcategorycode 컬럼의 값이 제일적은 1개만 가져오는 추상 메소드 *** //
+	@Override
+	public String getMinLgcategorycode() 
+		throws SQLException{
+		
+		String code = null;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql = " select min(lgcategorycode) AS lgcategorycode "
+					   + " from tbl_wordLargeCategory ";
+			
+			pstmt = conn.prepareStatement(sql); 
+						
+			rs = pstmt.executeQuery();
+			
+			boolean bool = rs.next();
+			
+			if(bool)
+				code = rs.getString("lgcategorycode");
+			
+		} finally{
+			close();
+		}
+		
+		return code;
+		
+	}; // end of String getMinLgcategorycode()-----------------------
+
+
+// === *** 테이블 tbl_wordMiddleCategory 에서 mdcategorycode 와 codename 을 가져오는(select) 메소드 생성하기 *** // 
+	@Override
+	public List<HashMap<String, String>> getMdcategorycode(String lgcategorycode) 
+		throws SQLException {
+
+		List<HashMap<String, String>> mdcategorycodeList = null;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql = " select mdcategorycode, codename "
+					   + " from tbl_wordMiddleCategory "
+					   + " where fk_lgcategorycode = ? "
+					   + " order by seq asc ";
+			
+			pstmt = conn.prepareStatement(sql); 
+			pstmt.setString(1, lgcategorycode);
+			
+			rs = pstmt.executeQuery();
+			
+			int cnt = 0;
+			while(rs.next()) {
+				cnt++;
+				if(cnt == 1) {
+					mdcategorycodeList = new ArrayList<HashMap<String, String>>();
+				}
+				
+				String mdcategorycode = rs.getString("mdcategorycode"); 
+				String codename = rs.getString("codename"); 
+			    
+			    HashMap<String, String> map = new HashMap<String, String>();
+			    map.put("MDCATEGORYCODE", mdcategorycode);
+			    map.put("CODENAME", codename);
+			      
+			    mdcategorycodeList.add(map);  
+			}// end of while-----------------
+			
+		} finally{
+			close();
+		}
+		
+		return mdcategorycodeList;
+	}// end of List<HashMap<String, String>> getMdcategorycode()---------------------------	
+
+
+
+
+// === *** tbl_wordsearchtest 테이블에 insert 해주는 메소드 생성하기 *** //
+	@Override
+	public int addWord(HashMap<String, String> map) 
+		throws SQLException {
+		
+		int n = 0;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.
+			
+			String sql = " insert into tbl_wordContents(seq, fk_mdcategorycode, title, content) "  
+					   + " values(seq_wordContents.nextval, ?, ?, ? )";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, map.get("MDCATEGORYCODE"));
+			pstmt.setString(2, map.get("TITLE"));
+			pstmt.setString(3, map.get("CONTENT"));
+			
+			n = pstmt.executeUpdate();
+			
+		} finally {
+			close();
+		}
+		
+		return n;
+	}// end of int addWord(HashMap<String, String> map) --------------------------	
+
+
+
+// === *** 검색어 입력시 글자동완성을 위해 tbl_wordsearchtest 테이블의 제목에서 해당글자가 포함된 데이터를 가져오는(select) 메소드 생성하기 *** // 
+	@Override	
+	public List<String> getSearchedTitle(String searchword)
+		  throws SQLException {
+			
+		List<String> stringList = null;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql =  " select distinct TITLE " 
+						+ " from " 
+						+ " ( "
+						+ "   select  case when length(title) > 15 then substr(title,1,15) "  
+						+ "           else title end as TITLE "
+						+ "   from tbl_wordContents "
+						+ "   where lower(title) like '%'|| lower(?) || '%' "
+						+ "   order by seq desc "
+						+ " ) ";
+			
+			pstmt = conn.prepareStatement(sql); 
+			pstmt.setString(1, searchword);
+			
+			rs = pstmt.executeQuery();
+			
+			int cnt = 0;
+			while(rs.next()) {
+				cnt++;
+				if(cnt == 1) {
+					stringList = new ArrayList<String>();
+				}
+				
+			    String title = rs.getString("TITLE"); 
+			      
+			    stringList.add(title);  
+			}// end of while-----------------
+			
+		} finally{
+			close();
+		}
+		
+		return stringList;
+		
+	}// end of getSearchedTitle(String searchword)-----------------	
+
+
+
+// === *** 검색조건에 맞는 총 게시물갯수 알아오기 *** //  
+	@Override
+	public int getTotalCountByMdcode(String mdcode) 
+		throws SQLException {
+		
+		int totalCount = 0;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql = "select count(*) AS CNT "
+					+ "   from tbl_wordContents"
+					+ "   where fk_mdcategorycode = ? ";
+					
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, mdcode);
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			totalCount = rs.getInt("CNT");
+			
+		} finally {
+			close();
+		}
+		
+		return totalCount;
+		
+	}// end of int getTotalCountByMdcode(String mdcode)----------------------------
+
+
+
+@Override
+	public int getTotalCountBySearchword(String searchword) 
+		throws SQLException {
+		
+		int totalCount = 0;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			String sql = "select count(*) AS CNT "
+					+ "   from tbl_wordContents"
+					+ "   where lower(title) like '%'|| lower(?) || '%' ";
+					
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, searchword);
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			
+			totalCount = rs.getInt("CNT");
+			
+		} finally {
+			close();
+		}
+		
+		return totalCount;
+		
+	}// end of int getTotalCountBySearchword(String searchword)----------------------------
+
+
+
+// === *** tbl_wordsearchtest 테이블에서 중분류 코드에 해당하는 글내용 또는 글제목에 해당하는 글내용을 조회해주는 추상 메소드 *** //
+	@Override
+	public List<HashMap<String, String>> getSearchContent(int sizePerPage, int currentShowPageNo, String mdcode, String searchword) 
+		throws SQLException {
+
+		List<HashMap<String, String>> mapList = null;
+		
+		try {
+			conn = ds.getConnection();
+			// 객체 ds 를 통해 아파치톰캣이 제공하는 DBCP(DB Connection pool)에서 생성된 커넥션을 빌려온다.	
+			
+			if(!"".equals(mdcode)) {
+				String sql = "select rno, seq, lgcodename, mdcodename, title, content\n"+
+						"from \n"+
+						"(\n"+
+						"    select rownum AS RNO, \n"+
+						"           seq, lgcodename, mdcodename, title, content\n"+
+						"    from\n"+
+						"    (\n"+
+					    "       select A.seq, C.codename AS lgcodename, B.codename AS mdcodename, A.title, A.content " + 
+						"       from tbl_wordContents A join tbl_wordMiddleCategory B " + 
+					    "       on A.fk_mdcategorycode = B.mdcategorycode  " + 
+					    "       join tbl_wordLargeCategory C " + 
+					    "       on B.fk_lgcategorycode = C.lgcategorycode " + 
+					    "       and A.fk_mdcategorycode = ? " + 
+						"       order by seq desc " + 
+						"    ) V\n"+
+						") T\n"+
+						"where T.RNO between ? and ?";
+				
+				pstmt = conn.prepareStatement(sql); 
+				pstmt.setString(1, mdcode);
+				pstmt.setInt(2, (currentShowPageNo*sizePerPage) - (sizePerPage - 1) ); // 공식!!!
+				pstmt.setInt(3, (currentShowPageNo*sizePerPage) ); // 공식!!!
+			    /*
+				   --- 1페이지당 5개를 보여줄때  1page   where T.RNO between 1 and 5
+				   --- 1페이지당  5개를 보여줄때 2page   where T.RNO between 6 and 10
+				   --- 1페이지당  5개를 보여줄때 3page   where T.RNO between 11 and 15 
+			    */
+			}
+			
+		else {
+			
+				String sql = "select rno, seq, lgcodename, mdcodename, title, content\n"+
+					"from \n"+
+					"(\n"+
+					"    select rownum AS RNO, \n"+
+					"           seq, lgcodename, mdcodename, title, content\n"+
+					"    from\n"+
+					"    (\n"+
+					"        select A.seq, C.codename AS lgcodename, B.codename AS mdcodename, A.title, A.content \n"+
+					"        from tbl_wordContents A join tbl_wordMiddleCategory B \n"+
+					"        on A.fk_mdcategorycode = B.mdcategorycode  \n"+
+					"        join tbl_wordLargeCategory C \n"+
+					"        on B.fk_lgcategorycode = C.lgcategorycode \n"+
+					"        where lower(A.title) like '%'|| lower(?) || '%' \n"+
+					"        order by seq desc\n"+
+					"    ) V\n"+
+					") T\n"+
+					"where T.RNO between ? and ?";
+			
+			pstmt = conn.prepareStatement(sql); 
+			pstmt.setString(1, searchword);
+			pstmt.setInt(2, (currentShowPageNo*sizePerPage) - (sizePerPage - 1) ); // 공식!!!
+			pstmt.setInt(3, (currentShowPageNo*sizePerPage) ); // 공식!!!
+		    /*
+			   --- 1페이지당 5개를 보여줄때  1page   where T.RNO between 1 and 5
+			   --- 1페이지당  5개를 보여줄때 2page   where T.RNO between 6 and 10
+			   --- 1페이지당  5개를 보여줄때 3page   where T.RNO between 11 and 15 
+		    */
+		}
+			
+							
+			rs = pstmt.executeQuery();
+			
+			int cnt = 0;
+			while(rs.next()) {
+				cnt++;
+				if(cnt == 1) {
+					mapList = new ArrayList<HashMap<String, String>>();
+				}
+				
+				String seq = rs.getString("seq"); 
+				String lgcodename = rs.getString("lgcodename"); 
+			    String mdcodename = rs.getString("mdcodename"); 
+			    String title = rs.getString("title"); 
+			    String content = rs.getString("content"); 
+			    
+			    HashMap<String, String> map = new HashMap<String, String>();
+			    map.put("seq", seq);
+			    map.put("lgcodename", lgcodename);
+			    map.put("mdcodename", mdcodename);
+			    map.put("title", title);
+			    map.put("content", content);
+			      
+			    mapList.add(map);  
+			}// end of while-----------------
+			
+		} finally{
+			close();
+		}
+		
+		return mapList;		
+	}// end of getSearchContentByword(String word)---------------------------------
+	
 }

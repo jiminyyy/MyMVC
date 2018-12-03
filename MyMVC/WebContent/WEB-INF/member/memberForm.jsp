@@ -59,7 +59,7 @@
 		
 		$(".requiredInfo").each(function(){
 			
-			$(this).blur(function(){
+			$(this).blur(function(){ 
 				var data = $(this).val().trim();
 				if(data == "") { //입력하지 않거나 공백만 입력했을 경우
 					$(this).parent().find(".error").show();
