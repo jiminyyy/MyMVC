@@ -204,7 +204,7 @@ table#loginTbl td	{border: 1px solid gray;}
 							<input type="password" id="loginPwd" name="pwd" size="13" class="box" /></td>
 					</tr>
 					
-					<%-- 아이디찾기 | 비밀번호 찾기 --%>
+					<%-- 아이디찾기 | 비밀번호 찾기 --%> 
 					<tr>
 						<td colspan="2" align="center">
 							<a style="cursor:pointer;" data-toggle="modal" data-target="#userIdfind" data-dismiss="modal" >아이디찾기</a>

@@ -4,6 +4,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <jsp:include page="../header.jsp" />
+    
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" /> 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
 <style>
 
@@ -35,6 +38,7 @@
 		   
 	   } );// end of $("#spinner").spinner({});----------------
 	   
+	   goLikeDislikeCountShow();
 	   
    });// end of $(document).ready();------------------------------
    
@@ -106,6 +110,72 @@
   		}
 	   
    } // end of function goOrder(pnum) { // pnum은 제품번호
+	   
+	function goLikeDislikeCountShow(){
+		
+		var form_data = {"pnum":"${pvo.pnum}"};
+	   	$.ajax({
+			url:"likdDislikeCntShow.do",
+	   		type:"GET",
+	   		data:form_data,
+	   		dataType:"json",
+	   		success:function(json){
+	   			var likeCnt = json.likeCnt;
+	   			var dislikeCnt = json.dislikeCnt;
+	   			
+	   			$("#likeCnt").html(likeCnt);
+	   			$("#dislikeCnt").html(dislikeCnt);
+	   		},
+	   		error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+	   	});
+		   
+	} // end of function goLikeDislikeCountShow(){
+	   
+	function golikeAdd(pnum){
+	   
+	   var form_data = {"userid":"${sessionScope.loginuser.userid}",
+			   			"pnum":pnum};
+	   
+   		$.ajax({
+   			url:"likeAdd.do",
+   			type:"POST",
+   			data:form_data,
+   			dataType:"json",
+   			success:function(json){
+   				//alert(msg);
+   				swal(json.msg);
+   				goLikeDislikeCountShow();
+   				   				
+   			},
+   			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+   		});
+	} // end of function golikeAdd(pnum){
+   
+	function godislikeAdd(pnum){
+	   
+	   var form_data = {"userid":"${sessionScope.loginuser.userid}",
+			   			"pnum":pnum};
+	   
+   		$.ajax({
+   			url:"dislikeAdd.do",
+   			type:"POST",
+   			data:form_data,
+   			dataType:"json",
+   			success:function(json){
+   				
+   				swal(json.msg);
+   				goLikeDislikeCountShow();
+   				
+   			},
+   			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+   		});
+	} // end of function godislikeAdd(pnum){
    
 </script>
 
@@ -146,7 +216,7 @@
 				<input type="hidden" name="saleprice" value="${pvo.saleprice}" />
 				<input type="hidden" name="sumtotalprice" />
 				<input type="hidden" name="sumtotalpoint" />
-				<input type="hidden" name="goBackURL" value="${goBackURL}" />
+				<input type="hidden" name="goBackURL" id="goBackURL" value="${goBackURL}" />
 			</form>
 		</div>
 	</div>
@@ -164,6 +234,28 @@
 			</c:forEach>
 			</c:if>
 	 </div>
+	 
+	 <div class="row">
+		<div class="col-md-12 line" >
+			<span style="color:navy; font-weight: bold; font-size: 14pt;">제품설명</span>
+			<p>${pvo.pcontent}</p>
+		</div>
+	</div>
+	<%--  col-sm-offset-2 --%>
+	<div class="row" style="padding-top: 2%;">		
+		<div class="col-sm-6 col-lg-1 col-lg-offset-3" style="padding-bottom: 5%;">
+			<img width="150%" src="<%=request.getContextPath()%>/images/like.png" style="cursor:pointer;" onClick="golikeAdd('${pvo.pnum}');"/>
+		</div>
+		<div class="col-sm-6 col-lg-1" id="likeCnt" style="color: navy; font-size: 16pt;">
+		</div>
+		
+		<div class="col-sm-6 col-lg-1 col-lg-offset-2" style="padding-bottom: 5%;">
+			<img width="150%" src="<%=request.getContextPath()%>/images/dislike.png" style="cursor:pointer;" onClick="godislikeAdd('${pvo.pnum}');"/>
+		</div>
+		<div class="col-sm-6 col-lg-1 " id="dislikeCnt" style="color: navy; font-size: 16pt;">
+		</div>
+	 </div>
+	 
 </div>
 
 

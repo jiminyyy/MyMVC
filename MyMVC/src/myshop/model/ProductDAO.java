@@ -1368,4 +1368,192 @@ public class ProductDAO implements InterProductDAO {
 			
 			return mapList;
 		}
+
+		@Override
+		public int totalPspecCount(String pspec) throws SQLException {
+			
+			int totalCount = 0;
+			
+			try {
+				conn = ds.getConnection();
+				// DBCP객체 ds를 통해 context.xml에서 이미 설정된 Connection 객체를 빌려오는 것이다.
+				
+				String sql = " select count (*) as CNT "
+						   + " from jsp_product  "
+						   + " where pspec = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pspec);
+				
+				rs = pstmt.executeQuery();
+				
+				rs.next();
+				
+				totalCount = rs.getInt("CNT");
+				
+			} finally{
+				close();
+			}
+			
+			return totalCount;
+		}
+
+		@Override
+		public List<ProductVO> getProductByPspecAppend(String pspec, int startRno, int endRno) throws SQLException {
+			
+			List<ProductVO> productList = null;
+			try {
+				conn = ds.getConnection();
+				
+				String sql = " select RNO, pnum, pname, pcategory_fk, pcompany, pimage1, pimage2, pqty, price, saleprice, pspec, pcontent, point, pinputdate "+
+							 " from "+
+							 " ( "+
+							 " select row_number() over(order by pnum desc) as RNO, pnum, pname, pcategory_fk, pcompany, pimage1, pimage2, pqty, price, saleprice, "+
+							 "		 pspec, pcontent, point, to_char(pinputdate, 'yyyy-mm-dd') as pinputdate "+
+							 " from jsp_product "+
+							 " where pspec = ? "+
+							 " ) V "+
+							 " where RNO between ? and ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pspec);
+				pstmt.setInt(2, startRno);
+				pstmt.setInt(3, endRno);
+				
+				rs = pstmt.executeQuery();
+				
+				int cnt = 0;
+				while(rs.next()) {
+					cnt ++;
+					if(cnt == 1) {
+						productList = new ArrayList<ProductVO>();
+					}
+					
+					int pnum = rs.getInt("pnum");
+					String pname = rs.getString("pname");
+					String pcategory = rs.getString("pcategory_fk");
+					String pcompany = rs.getString("pcompany");
+					String pimage1 = rs.getString("pimage1");
+					String pimage2 = rs.getString("pimage2");
+					int pqty = rs.getInt("pqty");
+					int price = rs.getInt("price");
+					int saleprice = rs.getInt("saleprice");
+					String v_pspec = rs.getString("pspec");
+					String pcontent = rs.getString("pcontent");
+					int point = rs.getInt("point");
+					String pinputdate = rs.getString("pinputdate");
+					
+					ProductVO pvo = new ProductVO(pnum, pname, pcategory, pcompany, pimage1, pimage2, pqty, price, 
+														saleprice, v_pspec, pcontent, point, pinputdate);				
+					
+					productList.add(pvo);
+				}
+				
+			}finally {
+				close();
+			}
+			return productList;
+		}
+		
+		// 좋아요 및 싫어요 카운트 알아오기
+		@Override
+		public HashMap<String, Integer> getLikeDislikeCnt(String pnum) throws SQLException {
+			
+			HashMap<String, Integer> cntmap = new HashMap<String, Integer>();
+			
+			try {
+				conn = ds.getConnection();
+				
+				String sql = " select (select count(*) "+
+							 "         from jsp_like "+
+							 "         where pnum = ?) as likecnt "+
+							 "     ,  (select count(*) "+
+							 "         from jsp_dislike "+
+							 "         where pnum = ?) as dislikecnt "+
+							 " from dual ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, pnum);
+				pstmt.setString(2, pnum);
+				
+				rs = pstmt.executeQuery();
+				
+				rs.next();
+				
+				int likecnt = rs.getInt("likecnt");
+				int dislikecnt = rs.getInt("dislikecnt");
+				
+				cntmap.put("LIKECNT", likecnt);
+				cntmap.put("DISLIKECNT", dislikecnt);
+			
+			} finally {
+				close();
+			}
+			
+			return cntmap;
+		}
+
+		@Override
+		public int insertLike(String userid, String pnum) throws SQLException {
+			
+			int n = 0;
+			
+			try {
+				conn = ds.getConnection();
+				
+				String sql = " delete from jsp_dislike where userid = ? and pnum = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userid);
+				pstmt.setString(2, pnum);
+
+				pstmt.executeUpdate();
+				
+				sql = " insert into jsp_like (userid, pnum) values (?,?) ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userid);
+				pstmt.setString(2, pnum);
+				
+				n = pstmt.executeUpdate();
+				
+			
+			} finally {
+				close();
+			}
+			
+			return n;
+		}
+
+		@Override
+		public int insertDislike(String userid, String pnum) throws SQLException {
+			
+			int n = 0;
+			
+			try {
+				conn = ds.getConnection();
+				
+				String sql = " delete from jsp_like where userid = ? and pnum = ? ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userid);
+				pstmt.setString(2, pnum);
+
+				pstmt.executeUpdate();
+				
+				sql = " insert into jsp_dislike (userid, pnum) values (?,?) ";
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, userid);
+				pstmt.setString(2, pnum);
+				
+				n = pstmt.executeUpdate();
+				
+			
+			} finally {
+				close();
+			}
+			
+			return n;
+		}
 }

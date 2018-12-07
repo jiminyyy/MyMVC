@@ -97,6 +97,9 @@
 				<a data-toggle="modal" data-target="#searchStore" data-dismiss="modal" >매장찾기</a>
 				<%-- #searchStore는 footer에 있음 --%>
 			</div>
+			<div class="col-md-1">
+  		 		<a href="<%= ctxPath%>/sessionTest.do">세션테스트</a>
+			</div>
 		</div>
 	</div>
 	

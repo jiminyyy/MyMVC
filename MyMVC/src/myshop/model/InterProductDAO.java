@@ -73,4 +73,16 @@ public interface InterProductDAO {
 	
 	List<HashMap<String,String>> getStoreDetail(String storeno) throws SQLException;
 	
+	// Ajax 페이징 처리를 위한 제품 갯수 알아오기
+	int totalPspecCount(String pspec) throws SQLException;
+	
+	// ajax 더보기방식 상품정보를 설정한 단위로 잘라서 보여주는 추상메소드
+	List<ProductVO> getProductByPspecAppend(String pspec,int startRno,int endRno) throws SQLException;
+	
+	HashMap<String, Integer> getLikeDislikeCnt(String pnum) throws SQLException;
+	
+	int insertLike(String userid, String pnum) throws SQLException;
+	
+	int insertDislike(String userid, String pnum) throws SQLException;
+	
 }

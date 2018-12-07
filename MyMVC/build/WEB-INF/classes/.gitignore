@@ -1,6 +1,10 @@
+/ajax/
+/common/
+/jdbc/
+/member/
 /memo/
 /my/
 /myshop/
+/sessiontest/
 /test/
 /util/
-/ajax/
