@@ -1,5 +1,6 @@
 package myshop.controller;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
@@ -65,7 +66,7 @@ public class ProductRegisterEndAction extends AbstractController {
 			그러므로 Exception 처리를 해주어야 한다.*/
 			
 			mtreq = new MultipartRequest(req, imagesDir, 10*1024*1024, "UTF-8", new DefaultFileRenamePolicy());
-			
+						
 		}catch (IOException e) {
 			
 			req.setAttribute("msg", "용량(10MB)초과로 파일업로드 실패!");

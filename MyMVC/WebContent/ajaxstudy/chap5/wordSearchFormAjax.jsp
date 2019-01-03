@@ -23,6 +23,8 @@
 	$(document).ready(function(){
 		
 		goSearch("", "", "1");      // 초기치 설정
+		// goSearch(code, word, pageNo)
+		// /wordSearchForm.do입력 시 
 				
 		var lgCategorycodeName = "";
 		lgCategorycodeName += '<option value="">대분류</option>';
